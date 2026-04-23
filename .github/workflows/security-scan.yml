@@ -1,0 +1,28 @@
+name: CI-Polaris-PR-Comment
+on:
+    pull_request:
+      branches: [main, master]
+    push:
+      branches: [main, master]
+
+jobs:
+    polaris-fixpr:
+      runs-on: ubuntu-latest
+      steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Polaris FixPR Scan
+        uses: blackduck-inc/black-duck-security-scan@v2
+        with:
+          polaris_server_url: ${{ vars.POLARIS_SERVER_URL }}
+          polaris_access_token: ${{ secrets.POLARIS_ACCESS_TOKEN }}
+          polaris_application_name: ${{ github.event.repository.name }}
+          polaris_project_name: ${{ github.event.repository.name }}
+          polaris_assessment_types: "SCA"
+          polaris_test_sca_location: "Hybrid"
+          polaris_fixpr_enabled: true
+          polaris_fixpr_maxCount: 10
+          polaris_fixpr_filter_severities: "CRITICAL,HIGH"
+          polaris_fixpr_useUpgradeGuidance: "SHORT_TERM,LONG_TERM"
+          github_token: ${{ secrets.TOKENACTION }}
